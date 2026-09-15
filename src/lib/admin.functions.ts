@@ -62,7 +62,7 @@ async function registrarAuditoria(
   acao: string,
   entidade: string,
   entidadeId: string | null,
-  detalhes: Record<string, unknown>,
+  detalhes: Record<string, string | number | boolean | null>,
 ) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await supabaseAdmin

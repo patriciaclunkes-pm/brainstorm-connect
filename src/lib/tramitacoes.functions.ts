@@ -18,7 +18,7 @@ async function auditar(
   acao: string,
   entidade: string,
   entidadeId: string,
-  detalhes: Record<string, unknown>,
+  detalhes: Record<string, string | number | boolean | null>,
 ) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await supabaseAdmin
@@ -66,8 +66,8 @@ export const transicionarStatus = createServerFn({ method: "POST" })
       );
     }
 
-    const update: Record<string, unknown> = { status: novo };
-    if (novo === "recusada") update["motivo_recusa"] = parecer;
+    const update: { status: IdeiaStatus; motivo_recusa?: string } = { status: novo };
+    if (novo === "recusada") update.motivo_recusa = parecer;
 
     const { error: upErr } = await supabase.from("ideias").update(update).eq("id", ideia.id);
     if (upErr) throw new Error(upErr.message);
