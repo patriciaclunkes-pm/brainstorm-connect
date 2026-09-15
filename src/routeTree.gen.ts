@@ -10,33 +10,118 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedAvaliacaoRouteImport } from './routes/_authenticated/avaliacao'
+import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
+import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
+import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated/notificacoes'
+import { Route as AuthenticatedNovaIdeiaRouteImport } from './routes/_authenticated/nova-ideia'
+import { Route as AuthenticatedIdeiasIdRouteImport } from './routes/_authenticated/ideias.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAvaliacaoRoute = AuthenticatedAvaliacaoRouteImport.update({
+  id: '/avaliacao',
+  path: '/avaliacao',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEquipeRoute = AuthenticatedEquipeRouteImport.update({
+  id: '/equipe',
+  path: '/equipe',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
+  id: '/inicio',
+  path: '/inicio',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotificacoesRoute =
+  AuthenticatedNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedNovaIdeiaRoute = AuthenticatedNovaIdeiaRouteImport.update({
+  id: '/nova-ideia',
+  path: '/nova-ideia',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIdeiasIdRoute = AuthenticatedIdeiasIdRouteImport.update({
+  id: '/ideias/$id',
+  path: '/ideias/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/avaliacao': typeof AuthenticatedAvaliacaoRoute
+  '/equipe': typeof AuthenticatedEquipeRoute
+  '/inicio': typeof AuthenticatedInicioRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
+  '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/avaliacao': typeof AuthenticatedAvaliacaoRoute
+  '/equipe': typeof AuthenticatedEquipeRoute
+  '/inicio': typeof AuthenticatedInicioRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
+  '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/avaliacao': typeof AuthenticatedAvaliacaoRoute
+  '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
+  '/_authenticated/inicio': typeof AuthenticatedInicioRoute
+  '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
+  '/_authenticated/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/_authenticated/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/avaliacao'
+    | '/equipe'
+    | '/inicio'
+    | '/notificacoes'
+    | '/nova-ideia'
+    | '/ideias/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/avaliacao'
+    | '/equipe'
+    | '/inicio'
+    | '/notificacoes'
+    | '/nova-ideia'
+    | '/ideias/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/_authenticated/avaliacao'
+    | '/_authenticated/equipe'
+    | '/_authenticated/inicio'
+    | '/_authenticated/notificacoes'
+    | '/_authenticated/nova-ideia'
+    | '/_authenticated/ideias/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +133,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/avaliacao': {
+      id: '/_authenticated/avaliacao'
+      path: '/avaliacao'
+      fullPath: '/avaliacao'
+      preLoaderRoute: typeof AuthenticatedAvaliacaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/equipe': {
+      id: '/_authenticated/equipe'
+      path: '/equipe'
+      fullPath: '/equipe'
+      preLoaderRoute: typeof AuthenticatedEquipeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/inicio': {
+      id: '/_authenticated/inicio'
+      path: '/inicio'
+      fullPath: '/inicio'
+      preLoaderRoute: typeof AuthenticatedInicioRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notificacoes': {
+      id: '/_authenticated/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof AuthenticatedNotificacoesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/nova-ideia': {
+      id: '/_authenticated/nova-ideia'
+      path: '/nova-ideia'
+      fullPath: '/nova-ideia'
+      preLoaderRoute: typeof AuthenticatedNovaIdeiaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ideias/$id': {
+      id: '/_authenticated/ideias/$id'
+      path: '/ideias/$id'
+      fullPath: '/ideias/$id'
+      preLoaderRoute: typeof AuthenticatedIdeiasIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAvaliacaoRoute: typeof AuthenticatedAvaliacaoRoute
+  AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
+  AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
+  AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
+  AuthenticatedNovaIdeiaRoute: typeof AuthenticatedNovaIdeiaRoute
+  AuthenticatedIdeiasIdRoute: typeof AuthenticatedIdeiasIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAvaliacaoRoute: AuthenticatedAvaliacaoRoute,
+  AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
+  AuthenticatedInicioRoute: AuthenticatedInicioRoute,
+  AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
+  AuthenticatedNovaIdeiaRoute: AuthenticatedNovaIdeiaRoute,
+  AuthenticatedIdeiasIdRoute: AuthenticatedIdeiasIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
