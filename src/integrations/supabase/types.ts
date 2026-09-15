@@ -14,16 +14,321 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          acao: string
+          created_at: string
+          detalhes: Json | null
+          entidade: string
+          entidade_id: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          acao: string
+          created_at?: string
+          detalhes?: Json | null
+          entidade: string
+          entidade_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          detalhes?: Json | null
+          entidade?: string
+          entidade_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      categorias: {
+        Row: {
+          ativo: boolean
+          data_criacao: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          ativo?: boolean
+          data_criacao?: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          ativo?: boolean
+          data_criacao?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      equipes: {
+        Row: {
+          created_at: string
+          id: string
+          lider_id: string | null
+          nome: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lider_id?: string | null
+          nome: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lider_id?: string | null
+          nome?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipes_lider_fk"
+            columns: ["lider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      historico_tramitacoes: {
+        Row: {
+          avaliador_id: string | null
+          data_tramitacao: string
+          id: string
+          ideia_id: string
+          novo_status: Database["public"]["Enums"]["ideia_status"]
+          parecer_texto: string | null
+          status_anterior: Database["public"]["Enums"]["ideia_status"] | null
+        }
+        Insert: {
+          avaliador_id?: string | null
+          data_tramitacao?: string
+          id?: string
+          ideia_id: string
+          novo_status: Database["public"]["Enums"]["ideia_status"]
+          parecer_texto?: string | null
+          status_anterior?: Database["public"]["Enums"]["ideia_status"] | null
+        }
+        Update: {
+          avaliador_id?: string | null
+          data_tramitacao?: string
+          id?: string
+          ideia_id?: string
+          novo_status?: Database["public"]["Enums"]["ideia_status"]
+          parecer_texto?: string | null
+          status_anterior?: Database["public"]["Enums"]["ideia_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_tramitacoes_avaliador_id_fkey"
+            columns: ["avaliador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_tramitacoes_ideia_id_fkey"
+            columns: ["ideia_id"]
+            isOneToOne: false
+            referencedRelation: "ideias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ideias: {
+        Row: {
+          autor_id: string
+          categoria_id: string
+          data_registro: string
+          descricao: string
+          equipe_id: string | null
+          id: string
+          motivo_recusa: string | null
+          status: Database["public"]["Enums"]["ideia_status"]
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          autor_id: string
+          categoria_id: string
+          data_registro?: string
+          descricao: string
+          equipe_id?: string | null
+          id?: string
+          motivo_recusa?: string | null
+          status?: Database["public"]["Enums"]["ideia_status"]
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          autor_id?: string
+          categoria_id?: string
+          data_registro?: string
+          descricao?: string
+          equipe_id?: string | null
+          id?: string
+          motivo_recusa?: string | null
+          status?: Database["public"]["Enums"]["ideia_status"]
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ideias_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ideias_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ideias_equipe_id_fkey"
+            columns: ["equipe_id"]
+            isOneToOne: false
+            referencedRelation: "equipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notificacoes: {
+        Row: {
+          created_at: string
+          id: string
+          ideia_id: string | null
+          lida: boolean
+          mensagem: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ideia_id?: string | null
+          lida?: boolean
+          mensagem: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ideia_id?: string | null
+          lida?: boolean
+          mensagem?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificacoes_ideia_id_fkey"
+            columns: ["ideia_id"]
+            isOneToOne: false
+            referencedRelation: "ideias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notificacoes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          email: string
+          equipe_id: string | null
+          id: string
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          email?: string
+          equipe_id?: string | null
+          id: string
+          nome?: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          email?: string
+          equipe_id?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_equipe_id_fkey"
+            columns: ["equipe_id"]
+            isOneToOne: false
+            referencedRelation: "equipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_gestor: { Args: { _user_id: string }; Returns: boolean }
+      lidera_equipe: {
+        Args: { _equipe_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "rh" | "lider" | "colaborador"
+      ideia_status:
+        | "aguardando_avaliacao"
+        | "em_avaliacao"
+        | "aguardando_informacoes"
+        | "aprovada"
+        | "em_roadmap"
+        | "recusada"
+        | "implementada"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +455,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "rh", "lider", "colaborador"],
+      ideia_status: [
+        "aguardando_avaliacao",
+        "em_avaliacao",
+        "aguardando_informacoes",
+        "aprovada",
+        "em_roadmap",
+        "recusada",
+        "implementada",
+      ],
+    },
   },
 } as const
