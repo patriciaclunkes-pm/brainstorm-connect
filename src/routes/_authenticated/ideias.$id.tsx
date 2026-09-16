@@ -130,6 +130,17 @@ function DetalheIdeia() {
       toast.error("Selecione o novo status.");
       return;
     }
+    if (
+      (novoStatus === "recusada" || novoStatus === "aguardando_informacoes") &&
+      parecer.trim().length < 5
+    ) {
+      toast.error(
+        novoStatus === "recusada"
+          ? "Informe o motivo da recusa para concluir a ação."
+          : "Descreva quais informações são necessárias.",
+      );
+      return;
+    }
     setOcupado(true);
     try {
       await transicionar({
@@ -383,7 +394,14 @@ function DetalheIdeia() {
                 onChange={(e) => setParecer(e.target.value)}
               />
             </div>
-            <Button onClick={aplicarStatus} disabled={ocupado}>
+            <Button
+              onClick={aplicarStatus}
+              disabled={
+                ocupado ||
+                ((novoStatus === "recusada" || novoStatus === "aguardando_informacoes") &&
+                  parecer.trim().length < 5)
+              }
+            >
               Salvar avaliação
             </Button>
           </CardContent>
