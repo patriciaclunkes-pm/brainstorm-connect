@@ -58,7 +58,10 @@ function Entrada() {
   async function entrar(e: React.FormEvent) {
     e.preventDefault();
     setCarregando(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password: senha,
+    });
     setCarregando(false);
     if (error) {
       toast.error("E-mail ou senha incorretos.");
