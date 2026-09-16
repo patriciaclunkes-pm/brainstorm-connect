@@ -12,10 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedAvaliacaoRouteImport } from './routes/_authenticated/avaliacao'
+import { Route as AuthenticatedCategoriasRouteImport } from './routes/_authenticated/categorias'
 import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
+import { Route as AuthenticatedEquipesRouteImport } from './routes/_authenticated/equipes'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated/notificacoes'
 import { Route as AuthenticatedNovaIdeiaRouteImport } from './routes/_authenticated/nova-ideia'
+import { Route as AuthenticatedPessoasRouteImport } from './routes/_authenticated/pessoas'
 import { Route as AuthenticatedIdeiasIdRouteImport } from './routes/_authenticated/ideias.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -32,9 +35,19 @@ const AuthenticatedAvaliacaoRoute = AuthenticatedAvaliacaoRouteImport.update({
   path: '/avaliacao',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCategoriasRoute = AuthenticatedCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEquipeRoute = AuthenticatedEquipeRouteImport.update({
   id: '/equipe',
   path: '/equipe',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEquipesRoute = AuthenticatedEquipesRouteImport.update({
+  id: '/equipes',
+  path: '/equipes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
@@ -53,6 +66,11 @@ const AuthenticatedNovaIdeiaRoute = AuthenticatedNovaIdeiaRouteImport.update({
   path: '/nova-ideia',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPessoasRoute = AuthenticatedPessoasRouteImport.update({
+  id: '/pessoas',
+  path: '/pessoas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedIdeiasIdRoute = AuthenticatedIdeiasIdRouteImport.update({
   id: '/ideias/$id',
   path: '/ideias/$id',
@@ -62,19 +80,25 @@ const AuthenticatedIdeiasIdRoute = AuthenticatedIdeiasIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/avaliacao': typeof AuthenticatedAvaliacaoRoute
+  '/categorias': typeof AuthenticatedCategoriasRoute
   '/equipe': typeof AuthenticatedEquipeRoute
+  '/equipes': typeof AuthenticatedEquipesRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/pessoas': typeof AuthenticatedPessoasRoute
   '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/avaliacao': typeof AuthenticatedAvaliacaoRoute
+  '/categorias': typeof AuthenticatedCategoriasRoute
   '/equipe': typeof AuthenticatedEquipeRoute
+  '/equipes': typeof AuthenticatedEquipesRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/pessoas': typeof AuthenticatedPessoasRoute
   '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRoutesById {
@@ -82,10 +106,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/avaliacao': typeof AuthenticatedAvaliacaoRoute
+  '/_authenticated/categorias': typeof AuthenticatedCategoriasRoute
   '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
+  '/_authenticated/equipes': typeof AuthenticatedEquipesRoute
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/_authenticated/pessoas': typeof AuthenticatedPessoasRoute
   '/_authenticated/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRouteTypes {
@@ -93,29 +120,38 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/avaliacao'
+    | '/categorias'
     | '/equipe'
+    | '/equipes'
     | '/inicio'
     | '/notificacoes'
     | '/nova-ideia'
+    | '/pessoas'
     | '/ideias/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/avaliacao'
+    | '/categorias'
     | '/equipe'
+    | '/equipes'
     | '/inicio'
     | '/notificacoes'
     | '/nova-ideia'
+    | '/pessoas'
     | '/ideias/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_authenticated/avaliacao'
+    | '/_authenticated/categorias'
     | '/_authenticated/equipe'
+    | '/_authenticated/equipes'
     | '/_authenticated/inicio'
     | '/_authenticated/notificacoes'
     | '/_authenticated/nova-ideia'
+    | '/_authenticated/pessoas'
     | '/_authenticated/ideias/$id'
   fileRoutesById: FileRoutesById
 }
@@ -147,11 +183,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAvaliacaoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/categorias': {
+      id: '/_authenticated/categorias'
+      path: '/categorias'
+      fullPath: '/categorias'
+      preLoaderRoute: typeof AuthenticatedCategoriasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/equipe': {
       id: '/_authenticated/equipe'
       path: '/equipe'
       fullPath: '/equipe'
       preLoaderRoute: typeof AuthenticatedEquipeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/equipes': {
+      id: '/_authenticated/equipes'
+      path: '/equipes'
+      fullPath: '/equipes'
+      preLoaderRoute: typeof AuthenticatedEquipesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/inicio': {
@@ -175,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNovaIdeiaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pessoas': {
+      id: '/_authenticated/pessoas'
+      path: '/pessoas'
+      fullPath: '/pessoas'
+      preLoaderRoute: typeof AuthenticatedPessoasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/ideias/$id': {
       id: '/_authenticated/ideias/$id'
       path: '/ideias/$id'
@@ -187,19 +244,25 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAvaliacaoRoute: typeof AuthenticatedAvaliacaoRoute
+  AuthenticatedCategoriasRoute: typeof AuthenticatedCategoriasRoute
   AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
+  AuthenticatedEquipesRoute: typeof AuthenticatedEquipesRoute
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedNovaIdeiaRoute: typeof AuthenticatedNovaIdeiaRoute
+  AuthenticatedPessoasRoute: typeof AuthenticatedPessoasRoute
   AuthenticatedIdeiasIdRoute: typeof AuthenticatedIdeiasIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAvaliacaoRoute: AuthenticatedAvaliacaoRoute,
+  AuthenticatedCategoriasRoute: AuthenticatedCategoriasRoute,
   AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
+  AuthenticatedEquipesRoute: AuthenticatedEquipesRoute,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedNovaIdeiaRoute: AuthenticatedNovaIdeiaRoute,
+  AuthenticatedPessoasRoute: AuthenticatedPessoasRoute,
   AuthenticatedIdeiasIdRoute: AuthenticatedIdeiasIdRoute,
 }
 

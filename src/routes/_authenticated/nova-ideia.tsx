@@ -59,10 +59,18 @@ function NovaIdeia() {
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     if (!sessao) return;
-    if (titulo.trim().length < 5) return toast.error("Informe um título com pelo menos 5 caracteres.");
-    if (descricao.trim().length < 20)
-      return toast.error("Descreva a ideia com pelo menos 20 caracteres.");
-    if (!categoriaId) return toast.error("Selecione uma categoria.");
+    if (titulo.trim().length < 5) {
+      toast.error("Informe um título com pelo menos 5 caracteres.");
+      return;
+    }
+    if (descricao.trim().length < 20) {
+      toast.error("Descreva a ideia com pelo menos 20 caracteres.");
+      return;
+    }
+    if (!categoriaId) {
+      toast.error("Selecione uma categoria.");
+      return;
+    }
 
     setSalvando(true);
     const { data, error } = await supabase
