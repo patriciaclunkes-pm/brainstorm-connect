@@ -112,8 +112,7 @@ function Pessoas() {
     },
   });
 
-  const nomeEquipe = (id: string | null) =>
-    equipes.find((e) => e.id === id)?.nome ?? "—";
+  const nomeEquipe = (id: string | null) => equipes.find((e) => e.id === id)?.nome ?? "—";
 
   function recarregar() {
     queryClient.invalidateQueries({ queryKey: ["usuarios"] });
@@ -217,7 +216,13 @@ function Pessoas() {
             <form onSubmit={criarConta} className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="p-nome">Nome completo</Label>
-                <Input id="p-nome" value={nome} onChange={(e) => setNome(e.target.value)} maxLength={120} required />
+                <Input
+                  id="p-nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  maxLength={120}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="p-email">E-mail</Label>
@@ -353,9 +358,7 @@ function Pessoas() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Editar cadastro</DialogTitle>
-            <DialogDescription>
-              Deixe a senha em branco para mantê-la como está.
-            </DialogDescription>
+            <DialogDescription>Deixe a senha em branco para mantê-la como está.</DialogDescription>
           </DialogHeader>
           {edicao && (
             <div className="space-y-4">

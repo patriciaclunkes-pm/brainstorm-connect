@@ -54,7 +54,10 @@ function Equipes() {
   const { data: equipes = [], isLoading } = useQuery({
     queryKey: ["equipes"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("equipes").select("id, nome, lider_id").order("nome");
+      const { data, error } = await supabase
+        .from("equipes")
+        .select("id, nome, lider_id")
+        .order("nome");
       if (error) throw error;
       return data;
     },
@@ -100,7 +103,10 @@ function Equipes() {
       toast.error("Informe um nome de equipe.");
       return;
     }
-    const { error } = await supabase.from("equipes").update({ nome: nomeEdicao.trim() }).eq("id", id);
+    const { error } = await supabase
+      .from("equipes")
+      .update({ nome: nomeEdicao.trim() })
+      .eq("id", id);
     if (error) {
       toast.error("Não foi possível salvar.");
       return;
