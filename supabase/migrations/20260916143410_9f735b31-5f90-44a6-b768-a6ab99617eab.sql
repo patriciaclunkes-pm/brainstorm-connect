@@ -1,0 +1,1 @@
+DELETE FROM public.ideias WHERE id IN ('f554b3a9-820b-4f2c-b9c5-c28c508f532b'::uuid, '85b7b3a0-0ed4-4279-b8c7-56ceb8fbdd74'::uuid, '82fcf51a-a1fc-4292-922c-aabd449ce131'::uuid);
