@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 
 const roleSchema = z.enum(["admin", "rh", "lider", "colaborador"]);
 
@@ -50,7 +52,7 @@ export const criarAdminInicial = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-async function exigirAdmin(context: { supabase: any; userId: string }) {
+async function exigirAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
   const { data, error } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
