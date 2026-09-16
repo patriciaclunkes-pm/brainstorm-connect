@@ -1,4 +1,4 @@
 # Pendências
-- [ ] Validar as telas e corrigir erros
-- [ ] Criar a conta administrativa solicitada
-- [ ] Testar login e os fluxos principais
+- [x] Validar as telas e corrigir erros
+- [x] Criar a conta administrativa solicitada
+- [x] Testar login e os fluxos principais
