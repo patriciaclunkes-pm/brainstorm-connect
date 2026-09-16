@@ -2,14 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessao } from "@/hooks/useSessao";
 import { StatusBadge } from "@/components/StatusBadge";
-import { complementarIdeia, transicionarStatus } from "@/lib/tramitacoes.functions";
+import { complementarIdeia, editarIdeia, transicionarStatus } from "@/lib/tramitacoes.functions";
 import { formatarData, STATUS_LABEL, TRANSICOES, type IdeiaStatus } from "@/lib/ideias";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +47,8 @@ type Ideia = {
   motivo_recusa: string | null;
   data_registro: string;
   autor_id: string;
-  categorias: { nome: string } | null;
+  categoria_id: string;
+  categorias: { id: string; nome: string } | null;
   profiles: { nome: string } | null;
   equipes: { nome: string } | null;
 };
@@ -57,10 +59,15 @@ function DetalheIdeia() {
   const queryClient = useQueryClient();
   const transicionar = useServerFn(transicionarStatus);
   const complementar = useServerFn(complementarIdeia);
+  const editar = useServerFn(editarIdeia);
 
   const [novoStatus, setNovoStatus] = useState("");
   const [parecer, setParecer] = useState("");
   const [complemento, setComplemento] = useState("");
+  const [editando, setEditando] = useState(false);
+  const [tituloEdicao, setTituloEdicao] = useState("");
+  const [descricaoEdicao, setDescricaoEdicao] = useState("");
+  const [categoriaEdicao, setCategoriaEdicao] = useState("");
   const [ocupado, setOcupado] = useState(false);
 
   const { data: ideia, isLoading } = useQuery({
@@ -69,7 +76,7 @@ function DetalheIdeia() {
       const { data, error } = await supabase
         .from("ideias")
         .select(
-          "id, titulo, descricao, status, motivo_recusa, data_registro, autor_id, categorias(nome), profiles!ideias_autor_id_fkey(nome), equipes(nome)",
+          "id, titulo, descricao, status, motivo_recusa, data_registro, autor_id, categoria_id, categorias(id, nome), profiles!ideias_autor_id_fkey(nome), equipes(nome)",
         )
         .eq("id", id)
         .maybeSingle();
@@ -78,14 +85,24 @@ function DetalheIdeia() {
     },
   });
 
+  const { data: categorias = [] } = useQuery({
+    queryKey: ["categorias-edicao"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categorias")
+        .select("id, nome, ativo")
+        .order("nome");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const { data: historico = [] } = useQuery({
     queryKey: ["historico", id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("historico_tramitacoes")
-        .select(
-          "id, status_anterior, novo_status, parecer_texto, data_tramitacao, profiles(nome)",
-        )
+        .select("id, status_anterior, novo_status, parecer_texto, data_tramitacao, profiles(nome)")
         .eq("ideia_id", id)
         .order("data_tramitacao", { ascending: true });
       if (error) throw error;
@@ -143,6 +160,49 @@ function DetalheIdeia() {
     }
   }
 
+  function iniciarEdicao() {
+    if (!ideia) return;
+    setTituloEdicao(ideia.titulo);
+    setDescricaoEdicao(ideia.descricao);
+    setCategoriaEdicao(ideia.categoria_id);
+    setEditando(true);
+  }
+
+  async function salvarEdicao(e: React.FormEvent) {
+    e.preventDefault();
+    if (tituloEdicao.trim().length < 5) {
+      toast.error("Informe um título com pelo menos 5 caracteres.");
+      return;
+    }
+    if (descricaoEdicao.trim().length < 20) {
+      toast.error("Descreva a ideia com pelo menos 20 caracteres.");
+      return;
+    }
+    if (!categoriaEdicao) {
+      toast.error("Selecione uma categoria.");
+      return;
+    }
+
+    setOcupado(true);
+    try {
+      await editar({
+        data: {
+          ideiaId: id,
+          titulo: tituloEdicao,
+          descricao: descricaoEdicao,
+          categoriaId: categoriaEdicao,
+        },
+      });
+      toast.success("Ideia atualizada.");
+      setEditando(false);
+      recarregar();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível editar a ideia.");
+    } finally {
+      setOcupado(false);
+    }
+  }
+
   if (isLoading) return <p className="text-sm text-muted-foreground">Carregando…</p>;
   if (!ideia)
     return (
@@ -157,6 +217,8 @@ function DetalheIdeia() {
     );
 
   const ehAutor = sessao?.userId === ideia.autor_id;
+  const podeEditar =
+    ehAutor && ["aguardando_avaliacao", "aguardando_informacoes"].includes(ideia.status);
   const proximos = TRANSICOES[ideia.status];
 
   return (
@@ -178,11 +240,77 @@ function DetalheIdeia() {
                 {ideia.categorias?.nome ?? "Sem categoria"} • {formatarData(ideia.data_registro)}
               </CardDescription>
             </div>
-            <StatusBadge status={ideia.status} />
+            <div className="flex items-center gap-2">
+              <StatusBadge status={ideia.status} />
+              {podeEditar && !editando && (
+                <Button type="button" variant="outline" size="sm" onClick={iniciarEdicao}>
+                  <Pencil className="size-4" />
+                  Editar ideia
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm whitespace-pre-wrap">{ideia.descricao}</p>
+          {editando ? (
+            <form onSubmit={salvarEdicao} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="titulo-edicao">Título</Label>
+                <Input
+                  id="titulo-edicao"
+                  value={tituloEdicao}
+                  onChange={(e) => setTituloEdicao(e.target.value)}
+                  minLength={5}
+                  maxLength={150}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="categoria-edicao">Categoria</Label>
+                <Select value={categoriaEdicao} onValueChange={setCategoriaEdicao}>
+                  <SelectTrigger id="categoria-edicao">
+                    <SelectValue placeholder="Selecione uma categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categorias
+                      .filter((categoria) => categoria.ativo || categoria.id === ideia.categoria_id)
+                      .map((categoria) => (
+                        <SelectItem key={categoria.id} value={categoria.id}>
+                          {categoria.nome}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="descricao-edicao">Descrição</Label>
+                <Textarea
+                  id="descricao-edicao"
+                  value={descricaoEdicao}
+                  onChange={(e) => setDescricaoEdicao(e.target.value)}
+                  rows={8}
+                  minLength={20}
+                  maxLength={5000}
+                  required
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit" disabled={ocupado}>
+                  {ocupado ? "Salvando..." : "Salvar alterações"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={ocupado}
+                  onClick={() => setEditando(false)}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <p className="text-sm whitespace-pre-wrap">{ideia.descricao}</p>
+          )}
           {ideia.motivo_recusa && (
             <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3">
               <p className="text-sm font-medium text-destructive">Motivo da recusa</p>

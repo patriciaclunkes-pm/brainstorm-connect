@@ -54,7 +54,9 @@ export const transicionarStatus = createServerFn({ method: "POST" })
     const novo = data.novoStatus as IdeiaStatus;
     if (atual === novo) throw new Error("A ideia já está neste status.");
     if (!TRANSICOES[atual].includes(novo)) {
-      throw new Error(`Transição não permitida de "${STATUS_LABEL[atual]}" para "${STATUS_LABEL[novo]}".`);
+      throw new Error(
+        `Transição não permitida de "${STATUS_LABEL[atual]}" para "${STATUS_LABEL[novo]}".`,
+      );
     }
 
     const parecer = data.parecer?.trim() ?? "";
@@ -87,6 +89,63 @@ export const transicionarStatus = createServerFn({ method: "POST" })
     });
 
     await auditar(userId, "alterar_status", "ideia", ideia.id, { de: atual, para: novo });
+    return { ok: true };
+  });
+
+export const editarIdeia = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        ideiaId: z.string().uuid(),
+        titulo: z.string().trim().min(5).max(150),
+        descricao: z.string().trim().min(20).max(5000),
+        categoriaId: z.string().uuid(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: ideia, error } = await supabase
+      .from("ideias")
+      .select("id, autor_id, status, titulo, descricao, categoria_id")
+      .eq("id", data.ideiaId)
+      .maybeSingle();
+
+    if (error || !ideia) throw new Error("Ideia não encontrada.");
+    if (ideia.autor_id !== userId) throw new Error("Somente o autor pode editar a ideia.");
+    if (!(["aguardando_avaliacao", "aguardando_informacoes"] as string[]).includes(ideia.status)) {
+      throw new Error("Esta ideia não pode mais ser editada.");
+    }
+
+    if (data.categoriaId !== ideia.categoria_id) {
+      const { data: categoria } = await supabase
+        .from("categorias")
+        .select("id")
+        .eq("id", data.categoriaId)
+        .eq("ativo", true)
+        .maybeSingle();
+      if (!categoria) throw new Error("Selecione uma categoria ativa.");
+    }
+
+    const { error: updateError } = await supabase
+      .from("ideias")
+      .update({
+        titulo: data.titulo,
+        descricao: data.descricao,
+        categoria_id: data.categoriaId,
+      })
+      .eq("id", ideia.id)
+      .eq("autor_id", userId)
+      .eq("status", ideia.status);
+    if (updateError) throw new Error(updateError.message);
+
+    await auditar(userId, "editar", "ideia", ideia.id, {
+      titulo_alterado: ideia.titulo !== data.titulo,
+      descricao_alterada: ideia.descricao !== data.descricao,
+      categoria_alterada: ideia.categoria_id !== data.categoriaId,
+      status: ideia.status,
+    });
     return { ok: true };
   });
 
