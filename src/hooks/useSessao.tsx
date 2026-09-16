@@ -24,7 +24,11 @@ export function useSessao() {
       if (!user) return null;
 
       const [{ data: perfil }, { data: roles }] = await Promise.all([
-        supabase.from("profiles").select("id, nome, email, equipe_id").eq("id", user.id).maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("id, nome, email, equipe_id")
+          .eq("id", user.id)
+          .maybeSingle(),
         supabase.from("user_roles").select("role").eq("user_id", user.id),
       ]);
 

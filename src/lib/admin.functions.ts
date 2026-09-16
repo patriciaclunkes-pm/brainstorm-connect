@@ -35,7 +35,8 @@ export const criarAdminInicial = createServerFn({ method: "POST" })
       email_confirm: true,
       user_metadata: { nome: data.nome },
     });
-    if (error || !created.user) throw new Error(error?.message ?? "Não foi possível criar o administrador.");
+    if (error || !created.user)
+      throw new Error(error?.message ?? "Não foi possível criar o administrador.");
 
     await supabaseAdmin
       .from("profiles")
@@ -93,7 +94,8 @@ export const criarUsuario = createServerFn({ method: "POST" })
       email_confirm: true,
       user_metadata: { nome: data.nome },
     });
-    if (error || !created.user) throw new Error(error?.message ?? "Não foi possível criar a conta.");
+    if (error || !created.user)
+      throw new Error(error?.message ?? "Não foi possível criar a conta.");
 
     await supabaseAdmin
       .from("profiles")
@@ -141,7 +143,9 @@ export const atualizarUsuario = createServerFn({ method: "POST" })
       if (error) throw new Error(error.message);
     }
 
-    await supabaseAdmin.auth.admin.updateUserById(data.id, { ban_duration: data.ativo ? "none" : "876000h" });
+    await supabaseAdmin.auth.admin.updateUserById(data.id, {
+      ban_duration: data.ativo ? "none" : "876000h",
+    });
 
     await registrarAuditoria(context.userId, "editar", "usuario", data.id, {
       role: data.role,
