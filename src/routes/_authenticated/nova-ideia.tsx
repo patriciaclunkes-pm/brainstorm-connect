@@ -167,7 +167,10 @@ function NovaIdeia() {
             </div>
 
             <div className="flex gap-2">
-              <Button type="submit" disabled={salvando || carregandoSessao || erroSessao || !sessao}>
+              <Button
+                type="submit"
+                disabled={salvando || carregandoSessao || erroSessao || !sessao}
+              >
                 {salvando ? "Enviando..." : carregandoSessao ? "Carregando..." : "Enviar ideia"}
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate({ to: "/inicio" })}>
