@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_authenticated/nova-ideia")({
 function NovaIdeia() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: sessao } = useSessao();
+  const { data: sessao, isPending: carregandoSessao, isError: erroSessao } = useSessao();
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
@@ -58,7 +58,14 @@ function NovaIdeia() {
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    if (!sessao) return;
+    if (carregandoSessao) {
+      toast.info("Aguarde enquanto seu acesso é carregado.");
+      return;
+    }
+    if (erroSessao || !sessao) {
+      toast.error("Não foi possível confirmar seu acesso. Atualize a página e tente novamente.");
+      return;
+    }
     if (titulo.trim().length < 5) {
       toast.error("Informe um título com pelo menos 5 caracteres.");
       return;
@@ -73,26 +80,31 @@ function NovaIdeia() {
     }
 
     setSalvando(true);
-    const { data, error } = await supabase
-      .from("ideias")
-      .insert({
-        autor_id: sessao.userId,
-        equipe_id: sessao.equipeId,
-        categoria_id: categoriaId,
-        titulo: titulo.trim(),
-        descricao: descricao.trim(),
-      })
-      .select("id")
-      .single();
-    setSalvando(false);
+    try {
+      const { data, error } = await supabase
+        .from("ideias")
+        .insert({
+          autor_id: sessao.userId,
+          equipe_id: sessao.equipeId,
+          categoria_id: categoriaId,
+          titulo: titulo.trim(),
+          descricao: descricao.trim(),
+        })
+        .select("id")
+        .single();
 
-    if (error || !data) {
-      toast.error("Não foi possível registrar a ideia.");
-      return;
+      if (error || !data) {
+        toast.error("Não foi possível registrar a ideia. Tente novamente em instantes.");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["minhas-ideias"] });
+      toast.success("Ideia registrada! Status: Aguardando avaliação.");
+      navigate({ to: "/ideias/$id", params: { id: data.id } });
+    } catch {
+      toast.error("Não foi possível registrar a ideia. Verifique sua conexão e tente novamente.");
+    } finally {
+      setSalvando(false);
     }
-    queryClient.invalidateQueries({ queryKey: ["minhas-ideias"] });
-    toast.success("Ideia registrada! Status: Aguardando avaliação.");
-    navigate({ to: "/ideias/$id", params: { id: data.id } });
   }
 
   return (
@@ -117,6 +129,7 @@ function NovaIdeia() {
                 id="titulo"
                 value={titulo}
                 onChange={(e) => setTitulo(e.target.value)}
+                minLength={5}
                 maxLength={150}
                 placeholder="Resumo da sua ideia"
                 required
@@ -146,6 +159,7 @@ function NovaIdeia() {
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
                 rows={8}
+                minLength={20}
                 maxLength={5000}
                 placeholder="Explique a oportunidade, o benefício esperado e como imagina a execução."
                 required
@@ -153,8 +167,8 @@ function NovaIdeia() {
             </div>
 
             <div className="flex gap-2">
-              <Button type="submit" disabled={salvando}>
-                Enviar ideia
+              <Button type="submit" disabled={salvando || carregandoSessao || erroSessao || !sessao}>
+                {salvando ? "Enviando..." : carregandoSessao ? "Carregando..." : "Enviar ideia"}
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate({ to: "/inicio" })}>
                 Cancelar
