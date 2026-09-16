@@ -103,7 +103,7 @@ function Inicio() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Olá, {sessao?.nome?.split(" ")[0]}</h1>
+          <h1 className="text-2xl font-semibold">Olá, {sessao?.nome ?? ""}</h1>
           <p className="text-sm text-muted-foreground">
             Acompanhe suas contribuições e os retornos do RH.
           </p>

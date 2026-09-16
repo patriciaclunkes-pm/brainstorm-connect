@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Lightbulb } from "lucide-react";
 import { toast } from "sonner";
@@ -35,6 +35,7 @@ export const Route = createFileRoute("/")({
 
 function Entrada() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const checarBootstrap = useServerFn(statusBootstrap);
   const criarAdmin = useServerFn(criarAdminInicial);
 
@@ -57,12 +58,16 @@ function Entrada() {
   async function entrar(e: React.FormEvent) {
     e.preventDefault();
     setCarregando(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password: senha,
+    });
     setCarregando(false);
     if (error) {
       toast.error("E-mail ou senha incorretos.");
       return;
     }
+    await queryClient.invalidateQueries();
     navigate({ to: "/inicio", replace: true });
   }
 

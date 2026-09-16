@@ -6,3 +6,5 @@
 - [x] Corrigir envio silencioso de nova ideia durante o carregamento da sessão
 
 - [x] Liberar edição completa da ideia nos dois estados permitidos
+- [ ] Corrigir atualização da sessão ao alternar entre usuários
+- [ ] Exibir o nome do usuário conectado após “Olá”
