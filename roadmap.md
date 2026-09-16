@@ -3,4 +3,4 @@
 - [x] Validar as telas e corrigir erros
 - [x] Criar a conta administrativa solicitada
 - [x] Testar login e os fluxos principais
-- [ ] Corrigir envio silencioso de nova ideia durante o carregamento da sessão
+- [x] Corrigir envio silencioso de nova ideia durante o carregamento da sessão
