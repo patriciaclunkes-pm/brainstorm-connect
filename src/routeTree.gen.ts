@@ -18,6 +18,7 @@ import { Route as AuthenticatedEquipesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated/notificacoes'
 import { Route as AuthenticatedNovaIdeiaRouteImport } from './routes/_authenticated/nova-ideia'
+import { Route as AuthenticatedPessoasRouteImport } from './routes/_authenticated/pessoas'
 import { Route as AuthenticatedIdeiasIdRouteImport } from './routes/_authenticated/ideias.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +66,11 @@ const AuthenticatedNovaIdeiaRoute = AuthenticatedNovaIdeiaRouteImport.update({
   path: '/nova-ideia',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPessoasRoute = AuthenticatedPessoasRouteImport.update({
+  id: '/pessoas',
+  path: '/pessoas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedIdeiasIdRoute = AuthenticatedIdeiasIdRouteImport.update({
   id: '/ideias/$id',
   path: '/ideias/$id',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/inicio': typeof AuthenticatedInicioRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/pessoas': typeof AuthenticatedPessoasRoute
   '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRoutesByTo {
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/inicio': typeof AuthenticatedInicioRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/pessoas': typeof AuthenticatedPessoasRoute
   '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRoutesById {
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/_authenticated/pessoas': typeof AuthenticatedPessoasRoute
   '/_authenticated/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
 export interface FileRouteTypes {
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/inicio'
     | '/notificacoes'
     | '/nova-ideia'
+    | '/pessoas'
     | '/ideias/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/inicio'
     | '/notificacoes'
     | '/nova-ideia'
+    | '/pessoas'
     | '/ideias/$id'
   id:
     | '__root__'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_authenticated/inicio'
     | '/_authenticated/notificacoes'
     | '/_authenticated/nova-ideia'
+    | '/_authenticated/pessoas'
     | '/_authenticated/ideias/$id'
   fileRoutesById: FileRoutesById
 }
@@ -213,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNovaIdeiaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pessoas': {
+      id: '/_authenticated/pessoas'
+      path: '/pessoas'
+      fullPath: '/pessoas'
+      preLoaderRoute: typeof AuthenticatedPessoasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/ideias/$id': {
       id: '/_authenticated/ideias/$id'
       path: '/ideias/$id'
@@ -231,6 +250,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedNovaIdeiaRoute: typeof AuthenticatedNovaIdeiaRoute
+  AuthenticatedPessoasRoute: typeof AuthenticatedPessoasRoute
   AuthenticatedIdeiasIdRoute: typeof AuthenticatedIdeiasIdRoute
 }
 
@@ -242,6 +262,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedNovaIdeiaRoute: AuthenticatedNovaIdeiaRoute,
+  AuthenticatedPessoasRoute: AuthenticatedPessoasRoute,
   AuthenticatedIdeiasIdRoute: AuthenticatedIdeiasIdRoute,
 }
 
