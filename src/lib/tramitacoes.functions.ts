@@ -54,7 +54,9 @@ export const transicionarStatus = createServerFn({ method: "POST" })
     const novo = data.novoStatus as IdeiaStatus;
     if (atual === novo) throw new Error("A ideia já está neste status.");
     if (!TRANSICOES[atual].includes(novo)) {
-      throw new Error(`Transição não permitida de "${STATUS_LABEL[atual]}" para "${STATUS_LABEL[novo]}".`);
+      throw new Error(
+        `Transição não permitida de "${STATUS_LABEL[atual]}" para "${STATUS_LABEL[novo]}".`,
+      );
     }
 
     const parecer = data.parecer?.trim() ?? "";

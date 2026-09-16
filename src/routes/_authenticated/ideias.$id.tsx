@@ -7,11 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessao } from "@/hooks/useSessao";
 import { StatusBadge } from "@/components/StatusBadge";
-import {
-  complementarIdeia,
-  editarIdeia,
-  transicionarStatus,
-} from "@/lib/tramitacoes.functions";
+import { complementarIdeia, editarIdeia, transicionarStatus } from "@/lib/tramitacoes.functions";
 import { formatarData, STATUS_LABEL, TRANSICOES, type IdeiaStatus } from "@/lib/ideias";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,9 +102,7 @@ function DetalheIdeia() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("historico_tramitacoes")
-        .select(
-          "id, status_anterior, novo_status, parecer_texto, data_tramitacao, profiles(nome)",
-        )
+        .select("id, status_anterior, novo_status, parecer_texto, data_tramitacao, profiles(nome)")
         .eq("ideia_id", id)
         .order("data_tramitacao", { ascending: true });
       if (error) throw error;
