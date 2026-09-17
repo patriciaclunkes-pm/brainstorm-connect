@@ -18,6 +18,7 @@ import { Route as AuthenticatedEquipesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated/notificacoes'
 import { Route as AuthenticatedNovaIdeiaRouteImport } from './routes/_authenticated/nova-ideia'
+import { Route as AuthenticatedOkrsRouteImport } from './routes/_authenticated/okrs'
 import { Route as AuthenticatedPessoasRouteImport } from './routes/_authenticated/pessoas'
 import { Route as AuthenticatedIdeiasIdRouteImport } from './routes/_authenticated/ideias.$id'
 
@@ -66,6 +67,11 @@ const AuthenticatedNovaIdeiaRoute = AuthenticatedNovaIdeiaRouteImport.update({
   path: '/nova-ideia',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOkrsRoute = AuthenticatedOkrsRouteImport.update({
+  id: '/okrs',
+  path: '/okrs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPessoasRoute = AuthenticatedPessoasRouteImport.update({
   id: '/pessoas',
   path: '/pessoas',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/inicio': typeof AuthenticatedInicioRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/okrs': typeof AuthenticatedOkrsRoute
   '/pessoas': typeof AuthenticatedPessoasRoute
   '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/inicio': typeof AuthenticatedInicioRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/okrs': typeof AuthenticatedOkrsRoute
   '/pessoas': typeof AuthenticatedPessoasRoute
   '/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/nova-ideia': typeof AuthenticatedNovaIdeiaRoute
+  '/_authenticated/okrs': typeof AuthenticatedOkrsRoute
   '/_authenticated/pessoas': typeof AuthenticatedPessoasRoute
   '/_authenticated/ideias/$id': typeof AuthenticatedIdeiasIdRoute
 }
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/inicio'
     | '/notificacoes'
     | '/nova-ideia'
+    | '/okrs'
     | '/pessoas'
     | '/ideias/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/inicio'
     | '/notificacoes'
     | '/nova-ideia'
+    | '/okrs'
     | '/pessoas'
     | '/ideias/$id'
   id:
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/_authenticated/inicio'
     | '/_authenticated/notificacoes'
     | '/_authenticated/nova-ideia'
+    | '/_authenticated/okrs'
     | '/_authenticated/pessoas'
     | '/_authenticated/ideias/$id'
   fileRoutesById: FileRoutesById
@@ -225,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNovaIdeiaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/okrs': {
+      id: '/_authenticated/okrs'
+      path: '/okrs'
+      fullPath: '/okrs'
+      preLoaderRoute: typeof AuthenticatedOkrsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/pessoas': {
       id: '/_authenticated/pessoas'
       path: '/pessoas'
@@ -250,6 +269,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedNovaIdeiaRoute: typeof AuthenticatedNovaIdeiaRoute
+  AuthenticatedOkrsRoute: typeof AuthenticatedOkrsRoute
   AuthenticatedPessoasRoute: typeof AuthenticatedPessoasRoute
   AuthenticatedIdeiasIdRoute: typeof AuthenticatedIdeiasIdRoute
 }
@@ -262,6 +282,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedNovaIdeiaRoute: AuthenticatedNovaIdeiaRoute,
+  AuthenticatedOkrsRoute: AuthenticatedOkrsRoute,
   AuthenticatedPessoasRoute: AuthenticatedPessoasRoute,
   AuthenticatedIdeiasIdRoute: AuthenticatedIdeiasIdRoute,
 }

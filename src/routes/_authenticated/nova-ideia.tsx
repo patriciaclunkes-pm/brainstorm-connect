@@ -183,7 +183,10 @@ function NovaIdeia() {
 
             <div className="space-y-2">
               <Label htmlFor="okr">OKR (opcional)</Label>
-              <Select value={okrId || "nenhum"} onValueChange={(value) => setOkrId(value === "nenhum" ? "" : value)}>
+              <Select
+                value={okrId || "nenhum"}
+                onValueChange={(value) => setOkrId(value === "nenhum" ? "" : value)}
+              >
                 <SelectTrigger id="okr">
                   <SelectValue placeholder="Nenhum OKR" />
                 </SelectTrigger>

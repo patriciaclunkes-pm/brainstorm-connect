@@ -9,13 +9,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export const Route = createFileRoute("/_authenticated/okrs")({
   head: () => ({
     meta: [
       { title: "OKRs — Espaço Aberto" },
-      { name: "description", content: "Cadastre e organize os OKRs associados às ideias do portal." },
+      {
+        name: "description",
+        content: "Cadastre e organize os OKRs associados às ideias do portal.",
+      },
       { property: "og:title", content: "OKRs — Espaço Aberto" },
       { property: "og:description", content: "Cadastro de OKRs associados às ideias do portal." },
       { property: "og:type", content: "website" },
@@ -36,7 +46,10 @@ function Okrs() {
   const { data: okrs = [], isLoading } = useQuery({
     queryKey: ["okrs-todos"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("okrs").select("id, nome, ativo, data_criacao").order("nome");
+      const { data, error } = await supabase
+        .from("okrs")
+        .select("id, nome, ativo, data_criacao")
+        .order("nome");
       if (error) throw error;
       return data;
     },
@@ -98,7 +111,9 @@ function Okrs() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">OKRs</h1>
-        <p className="text-sm text-muted-foreground">OKRs inativos deixam de aparecer em novas ideias, mas permanecem nos registros existentes.</p>
+        <p className="text-sm text-muted-foreground">
+          OKRs inativos deixam de aparecer em novas ideias, mas permanecem nos registros existentes.
+        </p>
       </div>
 
       <Card>
@@ -110,9 +125,17 @@ function Okrs() {
           <form onSubmit={criar} className="flex flex-wrap items-end gap-3">
             <div className="min-w-60 flex-1 space-y-2">
               <Label htmlFor="nome-okr">Nome</Label>
-              <Input id="nome-okr" value={nome} onChange={(e) => setNome(e.target.value)} maxLength={150} placeholder="Ex.: Aumentar a eficiência operacional" />
+              <Input
+                id="nome-okr"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                maxLength={150}
+                placeholder="Ex.: Aumentar a eficiência operacional"
+              />
             </div>
-            <Button type="submit" disabled={salvando}>Adicionar</Button>
+            <Button type="submit" disabled={salvando}>
+              Adicionar
+            </Button>
           </form>
         </CardContent>
       </Card>
@@ -123,19 +146,59 @@ function Okrs() {
           <CardDescription>{okrs.length} OKR(s).</CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? <p className="text-sm text-muted-foreground">Carregando…</p> : (
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground">Carregando…</p>
+          ) : (
             <Table>
-              <TableHeader><TableRow><TableHead>Nome</TableHead><TableHead className="w-32">Ativo</TableHead><TableHead className="w-40 text-right">Ações</TableHead></TableRow></TableHeader>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead className="w-32">Ativo</TableHead>
+                  <TableHead className="w-40 text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
               <TableBody>
                 {okrs.map((okr) => (
                   <TableRow key={okr.id}>
-                    <TableCell>{editandoId === okr.id ? <Input value={nomeEdicao} onChange={(e) => setNomeEdicao(e.target.value)} maxLength={150} /> : okr.nome}</TableCell>
-                    <TableCell><Switch checked={okr.ativo} onCheckedChange={(ativo) => alternarAtivo(okr.id, ativo)} aria-label={`Ativar OKR ${okr.nome}`} /></TableCell>
+                    <TableCell>
+                      {editandoId === okr.id ? (
+                        <Input
+                          value={nomeEdicao}
+                          onChange={(e) => setNomeEdicao(e.target.value)}
+                          maxLength={150}
+                        />
+                      ) : (
+                        okr.nome
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Switch
+                        checked={okr.ativo}
+                        onCheckedChange={(ativo) => alternarAtivo(okr.id, ativo)}
+                        aria-label={`Ativar OKR ${okr.nome}`}
+                      />
+                    </TableCell>
                     <TableCell className="text-right">
                       {editandoId === okr.id ? (
-                        <div className="flex justify-end gap-2"><Button size="sm" onClick={() => salvarNome(okr.id)}>Salvar</Button><Button size="sm" variant="outline" onClick={() => setEditandoId(null)}>Cancelar</Button></div>
+                        <div className="flex justify-end gap-2">
+                          <Button size="sm" onClick={() => salvarNome(okr.id)}>
+                            Salvar
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setEditandoId(null)}>
+                            Cancelar
+                          </Button>
+                        </div>
                       ) : (
-                        <Button size="sm" variant="outline" onClick={() => { setEditandoId(okr.id); setNomeEdicao(okr.nome); }}>Editar</Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditandoId(okr.id);
+                            setNomeEdicao(okr.nome);
+                          }}
+                        >
+                          Editar
+                        </Button>
                       )}
                     </TableCell>
                   </TableRow>
