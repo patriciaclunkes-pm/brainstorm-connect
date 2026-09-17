@@ -8,3 +8,4 @@
 - [x] Liberar edição completa da ideia nos dois estados permitidos
 - [x] Corrigir atualização da sessão ao alternar entre usuários
 - [x] Exibir o nome do usuário conectado após “Olá”
+- [ ] Criar cadastro de OKRs com ativação, edição e seleção opcional nas ideias
