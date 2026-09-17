@@ -148,6 +148,7 @@ export type Database = {
           equipe_id: string | null
           id: string
           motivo_recusa: string | null
+          okr_id: string | null
           status: Database["public"]["Enums"]["ideia_status"]
           titulo: string
           updated_at: string
@@ -160,6 +161,7 @@ export type Database = {
           equipe_id?: string | null
           id?: string
           motivo_recusa?: string | null
+          okr_id?: string | null
           status?: Database["public"]["Enums"]["ideia_status"]
           titulo: string
           updated_at?: string
@@ -172,6 +174,7 @@ export type Database = {
           equipe_id?: string | null
           id?: string
           motivo_recusa?: string | null
+          okr_id?: string | null
           status?: Database["public"]["Enums"]["ideia_status"]
           titulo?: string
           updated_at?: string
@@ -196,6 +199,13 @@ export type Database = {
             columns: ["equipe_id"]
             isOneToOne: false
             referencedRelation: "equipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ideias_okr_id_fkey"
+            columns: ["okr_id"]
+            isOneToOne: false
+            referencedRelation: "okrs"
             referencedColumns: ["id"]
           },
         ]
@@ -241,6 +251,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      okrs: {
+        Row: {
+          ativo: boolean
+          data_criacao: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          ativo?: boolean
+          data_criacao?: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          ativo?: boolean
+          data_criacao?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

@@ -41,6 +41,7 @@ function NovaIdeia() {
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
+  const [okrId, setOkrId] = useState("");
   const [salvando, setSalvando] = useState(false);
 
   const { data: categorias = [] } = useQuery({
@@ -48,6 +49,19 @@ function NovaIdeia() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categorias")
+        .select("id, nome")
+        .eq("ativo", true)
+        .order("nome");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: okrs = [] } = useQuery({
+    queryKey: ["okrs-ativos"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("okrs")
         .select("id, nome")
         .eq("ativo", true)
         .order("nome");
@@ -87,6 +101,7 @@ function NovaIdeia() {
           autor_id: sessao.userId,
           equipe_id: sessao.equipeId,
           categoria_id: categoriaId,
+          okr_id: okrId || null,
           titulo: titulo.trim(),
           descricao: descricao.trim(),
         })
@@ -164,6 +179,26 @@ function NovaIdeia() {
                 placeholder="Explique a oportunidade, o benefício esperado e como imagina a execução."
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="okr">OKR (opcional)</Label>
+              <Select
+                value={okrId || "nenhum"}
+                onValueChange={(value) => setOkrId(value === "nenhum" ? "" : value)}
+              >
+                <SelectTrigger id="okr">
+                  <SelectValue placeholder="Nenhum OKR" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="nenhum">Nenhum OKR</SelectItem>
+                  {okrs.map((okr) => (
+                    <SelectItem key={okr.id} value={okr.id}>
+                      {okr.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex gap-2">

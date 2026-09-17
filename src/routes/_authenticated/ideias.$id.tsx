@@ -48,7 +48,9 @@ type Ideia = {
   data_registro: string;
   autor_id: string;
   categoria_id: string;
+  okr_id: string | null;
   categorias: { id: string; nome: string } | null;
+  okrs: { id: string; nome: string } | null;
   profiles: { nome: string } | null;
   equipes: { nome: string } | null;
 };
@@ -68,6 +70,7 @@ function DetalheIdeia() {
   const [tituloEdicao, setTituloEdicao] = useState("");
   const [descricaoEdicao, setDescricaoEdicao] = useState("");
   const [categoriaEdicao, setCategoriaEdicao] = useState("");
+  const [okrEdicao, setOkrEdicao] = useState("");
   const [ocupado, setOcupado] = useState(false);
 
   const { data: ideia, isLoading } = useQuery({
@@ -76,7 +79,7 @@ function DetalheIdeia() {
       const { data, error } = await supabase
         .from("ideias")
         .select(
-          "id, titulo, descricao, status, motivo_recusa, data_registro, autor_id, categoria_id, categorias(id, nome), profiles!ideias_autor_id_fkey(nome), equipes(nome)",
+          "id, titulo, descricao, status, motivo_recusa, data_registro, autor_id, categoria_id, okr_id, categorias(id, nome), okrs(id, nome), profiles!ideias_autor_id_fkey(nome), equipes(nome)",
         )
         .eq("id", id)
         .maybeSingle();
@@ -92,6 +95,15 @@ function DetalheIdeia() {
         .from("categorias")
         .select("id, nome, ativo")
         .order("nome");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: okrs = [] } = useQuery({
+    queryKey: ["okrs-edicao"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("okrs").select("id, nome, ativo").order("nome");
       if (error) throw error;
       return data;
     },
@@ -176,6 +188,7 @@ function DetalheIdeia() {
     setTituloEdicao(ideia.titulo);
     setDescricaoEdicao(ideia.descricao);
     setCategoriaEdicao(ideia.categoria_id);
+    setOkrEdicao(ideia.okr_id ?? "");
     setEditando(true);
   }
 
@@ -202,6 +215,7 @@ function DetalheIdeia() {
           titulo: tituloEdicao,
           descricao: descricaoEdicao,
           categoriaId: categoriaEdicao,
+          okrId: okrEdicao || null,
         },
       });
       toast.success("Ideia atualizada.");
@@ -250,6 +264,9 @@ function DetalheIdeia() {
                 {ideia.profiles?.nome ?? "Autor"} • {ideia.equipes?.nome ?? "Sem equipe"} •{" "}
                 {ideia.categorias?.nome ?? "Sem categoria"} • {formatarData(ideia.data_registro)}
               </CardDescription>
+              {ideia.okrs?.nome && (
+                <p className="mt-1 text-sm text-muted-foreground">OKR: {ideia.okrs.nome}</p>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <StatusBadge status={ideia.status} />
@@ -304,6 +321,27 @@ function DetalheIdeia() {
                   maxLength={5000}
                   required
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="okr-edicao">OKR (opcional)</Label>
+                <Select
+                  value={okrEdicao || "nenhum"}
+                  onValueChange={(value) => setOkrEdicao(value === "nenhum" ? "" : value)}
+                >
+                  <SelectTrigger id="okr-edicao">
+                    <SelectValue placeholder="Nenhum OKR" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="nenhum">Nenhum OKR</SelectItem>
+                    {okrs
+                      .filter((okr) => okr.ativo || okr.id === ideia.okr_id)
+                      .map((okr) => (
+                        <SelectItem key={okr.id} value={okr.id}>
+                          {okr.nome}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button type="submit" disabled={ocupado}>
