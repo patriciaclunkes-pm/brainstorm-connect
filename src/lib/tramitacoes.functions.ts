@@ -101,6 +101,7 @@ export const editarIdeia = createServerFn({ method: "POST" })
         titulo: z.string().trim().min(5).max(150),
         descricao: z.string().trim().min(20).max(5000),
         categoriaId: z.string().uuid(),
+        okrId: z.string().uuid().nullable(),
       })
       .parse(input),
   )
@@ -108,7 +109,7 @@ export const editarIdeia = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: ideia, error } = await supabase
       .from("ideias")
-      .select("id, autor_id, status, titulo, descricao, categoria_id")
+      .select("id, autor_id, status, titulo, descricao, categoria_id, okr_id")
       .eq("id", data.ideiaId)
       .maybeSingle();
 
@@ -128,12 +129,23 @@ export const editarIdeia = createServerFn({ method: "POST" })
       if (!categoria) throw new Error("Selecione uma categoria ativa.");
     }
 
+    if (data.okrId && data.okrId !== ideia.okr_id) {
+      const { data: okr } = await supabase
+        .from("okrs")
+        .select("id")
+        .eq("id", data.okrId)
+        .eq("ativo", true)
+        .maybeSingle();
+      if (!okr) throw new Error("Selecione um OKR ativo.");
+    }
+
     const { error: updateError } = await supabase
       .from("ideias")
       .update({
         titulo: data.titulo,
         descricao: data.descricao,
         categoria_id: data.categoriaId,
+        okr_id: data.okrId,
       })
       .eq("id", ideia.id)
       .eq("autor_id", userId)
@@ -144,6 +156,7 @@ export const editarIdeia = createServerFn({ method: "POST" })
       titulo_alterado: ideia.titulo !== data.titulo,
       descricao_alterada: ideia.descricao !== data.descricao,
       categoria_alterada: ideia.categoria_id !== data.categoriaId,
+      okr_alterado: ideia.okr_id !== data.okrId,
       status: ideia.status,
     });
     return { ok: true };

@@ -32,6 +32,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   if (sessao?.isGestor) itens.push({ to: "/avaliacao", label: "Avaliação" });
   if (sessao?.isLider) itens.push({ to: "/equipe", label: "Minha equipe" });
   if (sessao?.isGestor) itens.push({ to: "/categorias", label: "Categorias" });
+  if (sessao?.isGestor) itens.push({ to: "/okrs", label: "OKRs" });
   if (sessao?.isAdmin) {
     itens.push({ to: "/pessoas", label: "Pessoas" });
     itens.push({ to: "/equipes", label: "Equipes" });
