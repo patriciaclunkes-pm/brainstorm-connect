@@ -9,3 +9,5 @@
 - [x] Corrigir atualização da sessão ao alternar entre usuários
 - [x] Exibir o nome do usuário conectado após “Olá”
 - [x] Criar cadastro de OKRs com ativação, edição e seleção opcional nas ideias
+
+- [ ] Criar landing page corporativa e mover o acesso para /login
