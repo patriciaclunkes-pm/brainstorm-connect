@@ -53,10 +53,12 @@ export const criarAdminInicial = createServerFn({ method: "POST" })
   });
 
 async function exigirAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
-  const { data, error } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
+  const { data, error } = await context.supabase
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
   if (error || !data) throw new Error("Apenas administradores podem executar esta ação.");
 }
 
@@ -172,8 +174,13 @@ export const excluirUsuario = createServerFn({ method: "POST" })
 export const listarUsuarios = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: gestor } = await context.supabase.rpc("is_gestor", { _user_id: context.userId });
-    if (!gestor) throw new Error("Sem permissão.");
+    const { data: papel, error: papelError } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId)
+      .in("role", ["admin", "rh"])
+      .maybeSingle();
+    if (papelError || !papel) throw new Error("Sem permissão.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: perfis, error } = await supabaseAdmin
       .from("profiles")

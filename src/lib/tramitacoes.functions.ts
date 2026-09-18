@@ -40,8 +40,14 @@ export const transicionarStatus = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    const { data: gestor } = await supabase.rpc("is_gestor", { _user_id: userId });
-    if (!gestor) throw new Error("Apenas RH e administradores podem alterar o status.");
+    const { data: papel, error: papelError } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .in("role", ["admin", "rh"])
+      .maybeSingle();
+    if (papelError || !papel)
+      throw new Error("Apenas RH e administradores podem alterar o status.");
 
     const { data: ideia, error } = await supabase
       .from("ideias")

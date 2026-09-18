@@ -8,6 +8,13 @@
       "when": 1789649445160,
       "tag": "0000_add_okrs_to_ideias",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789743414839,
+      "tag": "0001_secure_rls_helpers_and_notifications",
+      "breakpoints": true
     }
   ]
 }
