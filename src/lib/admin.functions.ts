@@ -6,52 +6,6 @@ import type { Database } from "@/integrations/supabase/types";
 
 const roleSchema = z.enum(["admin", "rh", "lider", "colaborador"]);
 
-export const statusBootstrap = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { count } = await supabaseAdmin
-    .from("profiles")
-    .select("id", { count: "exact", head: true });
-  return { precisaBootstrap: (count ?? 0) === 0 };
-});
-
-export const criarAdminInicial = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    z
-      .object({
-        nome: z.string().trim().min(2).max(120),
-        email: z.string().trim().email().max(255),
-        senha: z.string().min(8).max(72),
-      })
-      .parse(input),
-  )
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { count } = await supabaseAdmin
-      .from("profiles")
-      .select("id", { count: "exact", head: true });
-    if ((count ?? 0) > 0) throw new Error("O administrador inicial já foi criado.");
-
-    const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
-      email: data.email,
-      password: data.senha,
-      email_confirm: true,
-      user_metadata: { nome: data.nome },
-    });
-    if (error || !created.user)
-      throw new Error(error?.message ?? "Não foi possível criar o administrador.");
-
-    await supabaseAdmin
-      .from("profiles")
-      .update({ nome: data.nome, email: data.email })
-      .eq("id", created.user.id);
-    const { error: roleError } = await supabaseAdmin
-      .from("user_roles")
-      .insert({ user_id: created.user.id, role: "admin" });
-    if (roleError) throw new Error(roleError.message);
-
-    return { ok: true };
-  });
-
 async function exigirAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
   const { data, error } = await context.supabase
     .from("user_roles")
