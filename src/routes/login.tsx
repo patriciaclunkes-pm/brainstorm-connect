@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Lightbulb } from "lucide-react";
+import { ArrowLeft, Lightbulb } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Espaço Aberto — Portal de Ideias e Sugestões" },
+      { title: "Entrar — Espaço Aberto" },
       {
         name: "description",
         content:
-          "Portal corporativo para colaboradores registrarem ideias e o RH avaliar, responder e acompanhar cada contribuição.",
+          "Acesse o Espaço Aberto para registrar ideias e acompanhar o retorno de cada contribuição.",
       },
-      { property: "og:title", content: "Espaço Aberto — Portal de Ideias e Sugestões" },
+      { property: "og:title", content: "Entrar — Espaço Aberto" },
       {
         property: "og:description",
         content:
@@ -62,7 +62,13 @@ function Entrada() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-background px-4 py-16">
+      <Button asChild variant="ghost" size="sm" className="absolute top-4 left-4 sm:top-6 sm:left-6">
+        <Link to="/">
+          <ArrowLeft aria-hidden="true" />
+          Voltar
+        </Link>
+      </Button>
       <div className="mb-8 flex flex-col items-center text-center">
         <span className="mb-4 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <Lightbulb className="size-6" />
