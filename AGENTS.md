@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Backend URL/publishable key are embedded as build-time fallbacks in vite.config.ts `define`, because .env is git-ignored by user decision and repo-based builds would otherwise ship without them.
