@@ -10,15 +10,17 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 // would miss the backend connection. These values are public (URL + publishable key),
 // so they are safe to embed as build-time fallbacks.
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ||
-  process.env.SUPABASE_URL ||
+  process.env["VITE_SUPABASE_URL"] ||
+  process.env["SUPABASE_URL"] ||
   "https://rghbqawadfyimiiynnxs.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  process.env.SUPABASE_PUBLISHABLE_KEY ||
+  process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
+  process.env["SUPABASE_PUBLISHABLE_KEY"] ||
   "sb_publishable_XsGWvY7_DaLPtuRZP1GzJw_E_e5iEe7";
 const SUPABASE_PROJECT_ID =
-  process.env.VITE_SUPABASE_PROJECT_ID || process.env.SUPABASE_PROJECT_ID || "rghbqawadfyimiiynnxs";
+  process.env["VITE_SUPABASE_PROJECT_ID"] ||
+  process.env["SUPABASE_PROJECT_ID"] ||
+  "rghbqawadfyimiiynnxs";
 
 export default defineConfig({
   tanstackStart: {
